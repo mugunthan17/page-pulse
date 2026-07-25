@@ -1,5 +1,5 @@
 # PagePulse
-<img width="188" height="184" alt="image" src="https://github.com/user-attachments/assets/cd9c2d78-dbe1-42de-bd8e-904d2dcb6705" /> 
+<img width="188" height="184" alt="image" src="https://github.com/user-attachments/assets/cd9c2d78-dbe1-42de-bd8e-904d2dcb6705" /> <br>
 PagePulse is a full-stack web application for analyzing and scoring website performance, SEO, accessibility, and security.
 
 ## Project Structure
