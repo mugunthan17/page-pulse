@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-     "start": "node src/server.js",
-     "dev": "nodemon src/server.js"
+    "test": "jest",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "validator": "^13.15.35"
   },
   "devDependencies": {
+    "jest": "^30.4.2",
     "nodemon": "^3.1.14"
   }
 }
