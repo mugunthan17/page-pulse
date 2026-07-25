@@ -329,14 +329,6 @@ Given additional development time, I would like to add:
 
 ---
 
-# 🙏 Acknowledgement
-
-This project was built as part of the **Digital Heroes Software Development Internship Qualification Task**.
-
-**Live Application:** https://pagepulse-beryl.vercel.app/
-
----
-
 <p align="center">
-Made with ❤️ using React, Node.js and Express
+Made with ❤️ and JavaScript
 </p>
