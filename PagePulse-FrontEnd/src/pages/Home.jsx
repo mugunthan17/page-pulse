@@ -34,9 +34,7 @@ const getPerformanceMetrics = (loadTime) => {
   if (loadTime <= 100) {
     score = 99;
   } else if (loadTime <= 3000) {
-    score = Math.round(
-      99 - ((loadTime - 100) * (99 - 20)) / (3000 - 100)
-    );
+    score = Math.round(99 - ((loadTime - 100) * (99 - 20)) / (3000 - 100));
   } else {
     score = 20;
   }
@@ -48,12 +46,10 @@ const getPerformanceMetrics = (loadTime) => {
 
   if (score >= 90) {
     rating = "Fast";
-    message =
-      "Excellent loading performance with a near-instant response.";
+    message = "Excellent loading performance with a near-instant response.";
   } else if (score >= 70) {
     rating = "Fast";
-    message =
-      "Fast loading speed that provides a smooth user experience.";
+    message = "Fast loading speed that provides a smooth user experience.";
   } else if (score >= 50) {
     rating = "Average";
     message =
@@ -99,8 +95,7 @@ const buildReport = (payload) => {
 
     seo: {
       title: seo?.titleText || "No title found",
-      metaDescription:
-        seo?.descriptionText || "No meta description found",
+      metaDescription: seo?.descriptionText || "No meta description found",
       h1Count: content?.headings?.h1 ?? 0,
       seoScore: audit?.grade ?? "N/A",
       metaStatus: seo?.descriptionText ? "Present" : "Missing",
@@ -130,8 +125,7 @@ const buildReport = (payload) => {
       headers: {
         contentSecurityPolicy:
           security?.headers?.contentSecurityPolicy ?? false,
-        xFrameOptions:
-          security?.headers?.xFrameOptions ?? false,
+        xFrameOptions: security?.headers?.xFrameOptions ?? false,
         strictTransportSecurity:
           security?.headers?.strictTransportSecurity ?? false,
       },
@@ -217,12 +211,7 @@ const Home = () => {
 
         {loading && <Loader />}
 
-        {error && (
-          <ErrorState
-            message={error}
-            onRetry={handleAnalyze}
-          />
-        )}
+        {error && <ErrorState message={error} onRetry={handleAnalyze} />}
 
         {!loading && report && (
           <>
@@ -238,6 +227,19 @@ const Home = () => {
             </div>
           </>
         )}
+        <div className="mt-12 border-t border-slate-200 py-1">
+          <p className="text-center text-sm text-slate-500">
+            Built for{" "}
+            <a
+              href="https://digitalheroesco.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-blue-600 transition-colors duration-200 hover:text-blue-700 hover:underline"
+            >
+              Digital Heroes Training Task
+            </a>
+          </p>
+        </div>
       </div>
     </main>
   );
