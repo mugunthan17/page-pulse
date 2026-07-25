@@ -49,4 +49,4 @@ PagePulse is a full-stack web application for analyzing and scoring website perf
 
 - Frontend: React, Vite
 - Backend: Node.js, Express
-- Styling: CSS
+- Styling: Tailwind CSS
