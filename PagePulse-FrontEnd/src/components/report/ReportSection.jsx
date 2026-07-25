@@ -5,6 +5,8 @@ import ImagesCard from "./ImagesCard";
 import PerformanceCard from "./PerformanceCard";
 import HeadingCard from "./HeadingCard";
 import ContentOverviewCard from "./ContentOverviewCard";
+import SecurityCard from "./SecurityCard";
+import IssuesCard from "./IssuesCard";
 import SuccessBanner from "./SuccessBanner";
 
 const ReportSection = ({ report }) => {
@@ -18,22 +20,23 @@ const ReportSection = ({ report }) => {
         <StatsGrid summary={report.summary} />
 
         <div className="grid gap-6 lg:grid-cols-3">
-
           <SeoCard seo={report.seo} />
-
           <ImagesCard images={report.images} />
-
           <PerformanceCard performance={report.performance} />
-
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-
           <HeadingCard seo={report.seo} />
-
           <ContentOverviewCard content={report.content} />
-
         </div>
+
+        <SecurityCard security={report.security} />
+
+        <IssuesCard
+          score={report.analysis.score}
+          grade={report.analysis.grade}
+          issues={report.analysis.issues}
+        />
 
         <SuccessBanner analysis={report.analysis} />
 

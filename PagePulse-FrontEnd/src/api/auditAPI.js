@@ -19,6 +19,6 @@ export const auditWebsite = async (url) => {
       error.response?.data?.error ||
       "Unable to analyze website";
 
-    throw new Error(message);
+    throw new Error(message, { cause: error });
   }
 };

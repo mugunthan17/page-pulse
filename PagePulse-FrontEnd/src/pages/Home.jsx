@@ -42,6 +42,7 @@ const buildReport = (payload) => {
   const seo = data?.seo ?? {};
   const content = data?.content ?? {};
   const audit = data?.audit ?? {};
+  const security = data?.security ?? {};
 
   const totalImages = content?.totalImages ?? 0;
   const missingAlt = content?.imagesWithoutAlt ?? 0;
@@ -76,6 +77,16 @@ const buildReport = (payload) => {
       htmlElements: content?.htmlElements ?? 0,
       internalLinks: content?.internalLinks ?? 0,
       externalLinks: content?.externalLinks ?? 0,
+    },
+    security: {
+      https: security?.https ?? false,
+      headers: {
+        contentSecurityPolicy:
+          security?.headers?.contentSecurityPolicy ?? false,
+        xFrameOptions: security?.headers?.xFrameOptions ?? false,
+        strictTransportSecurity:
+          security?.headers?.strictTransportSecurity ?? false,
+      },
     },
     analysis: {
       completed: data?.status === "completed",

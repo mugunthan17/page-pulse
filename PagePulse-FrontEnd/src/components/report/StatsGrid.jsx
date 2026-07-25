@@ -8,7 +8,29 @@ import {
 
 import MetricCard from "./MetricCard";
 
+const getStatusBadge = (status) => {
+  if (status >= 200 && status < 300) {
+    return { label: "Success", color: "bg-green-100 text-green-700" };
+  }
+
+  if (status >= 300 && status < 400) {
+    return { label: "Redirect", color: "bg-blue-100 text-blue-700" };
+  }
+
+  if (status >= 400 && status < 500) {
+    return { label: "Client Error", color: "bg-amber-100 text-amber-700" };
+  }
+
+  if (status >= 500) {
+    return { label: "Server Error", color: "bg-red-100 text-red-700" };
+  }
+
+  return { label: "Unknown", color: "bg-slate-100 text-slate-700" };
+};
+
 const StatsGrid = ({ summary }) => {
+  const statusBadge = getStatusBadge(summary.status);
+
   return (
     <div
       className="
@@ -23,9 +45,13 @@ const StatsGrid = ({ summary }) => {
         iconColor="text-green-600"
         title="HTTP Status"
         value={summary.status}
-        badge="Success"
-        badgeColor="bg-green-100 text-green-700"
-        subtitle="Request completed successfully"
+        badge={statusBadge.label}
+        badgeColor={statusBadge.color}
+        subtitle={
+          statusBadge.label === "Success"
+            ? "Request completed successfully"
+            : "Review the response status for issues"
+        }
       />
 
       <MetricCard

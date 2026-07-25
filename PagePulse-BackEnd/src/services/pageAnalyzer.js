@@ -24,7 +24,13 @@ async function analyzePage(url) {
 
   const titleText = $("title").text().trim();
   const descriptionText = $('meta[name="description"]').attr("content")?.trim() || null;
-  const visibleText = $("body").text().replace(/\s+/g, " ").trim();
+
+  // Exclude <script>/<style>/<noscript> content from word count so JS/CSS
+  // source code isn't miscounted as "visible words". Cloning keeps the
+  // original DOM (and therefore htmlElements/heading/image counts) intact.
+  const bodyClone = $("body").clone();
+  bodyClone.find("script, style, noscript, template").remove();
+  const visibleText = bodyClone.text().replace(/\s+/g, " ").trim();
   const wordCount = visibleText ? visibleText.split(/\s+/).length : 0;
 
   const headings = {
@@ -35,19 +41,45 @@ async function analyzePage(url) {
 
   const images = $("img").length;
   const imagesWithoutAlt = $("img:not([alt])").length;
-  const totalLinks = $("a").length;
-  const internalLinks = $("a[href]").filter((_, element) => {
-    const href = $(element).attr("href") || "";
 
-    return (
-      href.startsWith("/") ||
-      href.startsWith("./") ||
-      href.startsWith("../") ||
+  // Classify each <a href="..."> as internal or external by resolving it
+  // against the analyzed page's URL and comparing hostnames. This correctly
+  // handles bare relative paths ("about.html"), protocol-relative URLs
+  // ("//example.com"), and skips non-navigational hrefs (mailto:, tel:,
+  // javascript:) and anchors with no href at all, instead of naively
+  // pattern-matching a handful of prefixes.
+  let internalLinks = 0;
+  let externalLinks = 0;
+
+  $("a[href]").each((_, element) => {
+    const href = ($(element).attr("href") || "").trim();
+
+    if (
+      !href ||
       href.startsWith("#") ||
-      href.startsWith("?")
-    );
-  }).length;
-  const externalLinks = totalLinks - internalLinks;
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:") ||
+      href.startsWith("javascript:")
+    ) {
+      return;
+    }
+
+    try {
+      const resolved = new URL(href, url);
+      const base = new URL(url);
+
+      if (resolved.hostname === base.hostname) {
+        internalLinks += 1;
+      } else {
+        externalLinks += 1;
+      }
+    } catch {
+      // Unparseable href (rare malformed markup) - ignore rather than
+      // silently miscounting it as external.
+    }
+  });
+
+  const totalLinks = internalLinks + externalLinks;
   const htmlElements = $("*").length;
 
   const security = analyzeSecurity(response, url);
