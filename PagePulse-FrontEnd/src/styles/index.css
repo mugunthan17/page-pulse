@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --primary: #2563EB;
+    --primary-dark: #1D4ED8;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --background: #F8FAFC;
+    --surface: #FFFFFF;
+    --text: #111827;
+    --text-light: #6B7280;
+    --border: #E5E7EB;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
