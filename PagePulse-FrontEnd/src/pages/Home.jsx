@@ -19,20 +19,56 @@ const formatBytes = (bytes) => {
     unitIndex += 1;
   }
 
-  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${
+    units[unitIndex]
+  }`;
 };
 
-const getPerformanceRating = (loadTime) => {
-  if (loadTime <= 1200) return "Fast";
-  if (loadTime <= 2500) return "Average";
-  return "Slow";
-};
+/**
+ * Calculates a dynamic performance rating based on load time.
+ * The score decreases gradually rather than using fixed buckets.
+ */
+const getPerformanceMetrics = (loadTime) => {
+  let score;
 
-const getPerformanceScore = (loadTime) => {
-  if (loadTime <= 800) return 90;
-  if (loadTime <= 1500) return 75;
-  if (loadTime <= 2500) return 55;
-  return 35;
+  if (loadTime <= 100) {
+    score = 99;
+  } else if (loadTime <= 3000) {
+    score = Math.round(
+      99 - ((loadTime - 100) * (99 - 20)) / (3000 - 100)
+    );
+  } else {
+    score = 20;
+  }
+
+  score = Math.max(20, Math.min(99, score));
+
+  let rating;
+  let message;
+
+  if (score >= 90) {
+    rating = "Fast";
+    message =
+      "Excellent loading performance with a near-instant response.";
+  } else if (score >= 70) {
+    rating = "Fast";
+    message =
+      "Fast loading speed that provides a smooth user experience.";
+  } else if (score >= 50) {
+    rating = "Average";
+    message =
+      "Good loading performance, though some optimization could improve responsiveness.";
+  } else {
+    rating = "Slow";
+    message =
+      "Slow loading performance. Consider optimizing assets and server response time.";
+  }
+
+  return {
+    score,
+    rating,
+    message,
+  };
 };
 
 const buildReport = (payload) => {
@@ -47,7 +83,10 @@ const buildReport = (payload) => {
 
   const totalImages = content?.totalImages ?? 0;
   const missingAlt = content?.imagesWithoutAlt ?? 0;
+
   const loadTime = performance?.loadTime ?? 0;
+
+  const metrics = getPerformanceMetrics(loadTime);
 
   return {
     summary: {
@@ -57,39 +96,49 @@ const buildReport = (payload) => {
       pageSize: formatBytes(performance?.pageSize ?? 0),
       wordCount: content?.wordCount ?? 0,
     },
+
     seo: {
       title: seo?.titleText || "No title found",
-      metaDescription: seo?.descriptionText || "No meta description found",
+      metaDescription:
+        seo?.descriptionText || "No meta description found",
       h1Count: content?.headings?.h1 ?? 0,
       seoScore: audit?.grade ?? "N/A",
       metaStatus: seo?.descriptionText ? "Present" : "Missing",
     },
+
     images: {
       total: totalImages,
       withAlt: Math.max(0, totalImages - missingAlt),
       missingAlt,
     },
+
     performance: {
       loadTime,
-      rating: getPerformanceRating(loadTime),
-      score: getPerformanceScore(loadTime),
+      rating: metrics.rating,
+      score: metrics.score,
+      message: metrics.message,
     },
+
     content: {
       htmlElements: content?.htmlElements ?? 0,
       internalLinks: content?.internalLinks ?? 0,
       externalLinks: content?.externalLinks ?? 0,
     },
+
     security: {
       https: security?.https ?? false,
       headers: {
         contentSecurityPolicy:
           security?.headers?.contentSecurityPolicy ?? false,
-        xFrameOptions: security?.headers?.xFrameOptions ?? false,
+        xFrameOptions:
+          security?.headers?.xFrameOptions ?? false,
         strictTransportSecurity:
           security?.headers?.strictTransportSecurity ?? false,
       },
     },
+
     warnings,
+
     analysis: {
       completed: data?.status === "completed",
       completedAt: new Date().toLocaleString(),
@@ -124,6 +173,7 @@ const Home = () => {
 
     try {
       setLoading(true);
+
       const payload = await auditWebsite(url);
 
       if (payload?.success) {
@@ -139,9 +189,7 @@ const Home = () => {
   };
 
   const clearError = () => {
-    if (error) {
-      setError("");
-    }
+    if (error) setError("");
   };
 
   const handleReset = () => {
@@ -169,7 +217,12 @@ const Home = () => {
 
         {loading && <Loader />}
 
-        {error && <ErrorState message={error} onRetry={handleAnalyze} />}
+        {error && (
+          <ErrorState
+            message={error}
+            onRetry={handleAnalyze}
+          />
+        )}
 
         {!loading && report && (
           <>
