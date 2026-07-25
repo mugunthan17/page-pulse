@@ -2,6 +2,21 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const analyzeSecurity = require("./securityAnalyzer");
 
+function detectClientRenderedShell($, htmlElements, wordCount) {
+  // Common SPA mount points left empty by frameworks like React/Vue/Angular
+  // when JS hasn't run yet.
+  const mountPoint = $("#root, #app, #__next, #__nuxt").first();
+  const mountIsEmpty =
+    mountPoint.length > 0 && mountPoint.children().length === 0;
+
+  // A real page almost always has more than a handful of elements and words.
+  // A bare CSR shell (just <head> + an empty mount div + <script> tags)
+  // typically lands in single digits to low teens for both.
+  const looksLikeEmptyShell = htmlElements <= 20 && wordCount <= 20;
+
+  return mountIsEmpty || looksLikeEmptyShell;
+}
+
 async function analyzePage(url) {
   const startTime = Date.now();
 
@@ -23,7 +38,8 @@ async function analyzePage(url) {
   const $ = cheerio.load(html);
 
   const titleText = $("title").text().trim();
-  const descriptionText = $('meta[name="description"]').attr("content")?.trim() || null;
+  const descriptionText =
+    $('meta[name="description"]').attr("content")?.trim() || null;
 
   // Exclude <script>/<style>/<noscript> content from word count so JS/CSS
   // source code isn't miscounted as "visible words". Cloning keeps the
@@ -83,6 +99,11 @@ async function analyzePage(url) {
   const htmlElements = $("*").length;
 
   const security = analyzeSecurity(response, url);
+  const isLikelyClientRendered = detectClientRenderedShell(
+    $,
+    htmlElements,
+    wordCount,
+  );
 
   return {
     url,
@@ -112,6 +133,15 @@ async function analyzePage(url) {
     },
     security,
     status: "completed",
+    warnings: isLikelyClientRendered
+      ? [
+          {
+            type: "client_rendered",
+            message:
+              "This page appears to render its content with JavaScript after load (e.g. a React/Vue/Angular SPA). This audit only reads the raw HTML the server sends, so images, headings, links, and text added by client-side JavaScript won't be reflected in these results.",
+          },
+        ]
+      : [],
   };
 }
 

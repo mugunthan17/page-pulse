@@ -8,14 +8,17 @@ import ContentOverviewCard from "./ContentOverviewCard";
 import SecurityCard from "./SecurityCard";
 import IssuesCard from "./IssuesCard";
 import SuccessBanner from "./SuccessBanner";
+import WarningBanner from "./WarningBanner";
 
 const ReportSection = ({ report }) => {
   return (
     <section className="mt-10 rounded-3xl border border-slate-200 bg-white shadow-lg">
-
       <ReportHeader report={report} />
 
       <div className="space-y-6 p-6">
+
+        {/* Show audit warnings, if any */}
+        <WarningBanner warnings={report.warnings} />
 
         <StatsGrid summary={report.summary} />
 
@@ -39,7 +42,6 @@ const ReportSection = ({ report }) => {
         />
 
         <SuccessBanner analysis={report.analysis} />
-
       </div>
     </section>
   );

@@ -43,6 +43,7 @@ const buildReport = (payload) => {
   const content = data?.content ?? {};
   const audit = data?.audit ?? {};
   const security = data?.security ?? {};
+  const warnings = data?.warnings ?? [];
 
   const totalImages = content?.totalImages ?? 0;
   const missingAlt = content?.imagesWithoutAlt ?? 0;
@@ -88,6 +89,7 @@ const buildReport = (payload) => {
           security?.headers?.strictTransportSecurity ?? false,
       },
     },
+    warnings,
     analysis: {
       completed: data?.status === "completed",
       completedAt: new Date().toLocaleString(),
