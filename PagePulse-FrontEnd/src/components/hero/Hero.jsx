@@ -153,14 +153,6 @@ const Hero = ({
           </p>
         )}
 
-        {/* Helper */}
-
-        {!error && (
-          <p className="mt-3 text-center text-xs text-slate-400">
-            Example: https://openai.com
-          </p>
-        )}
-
         {/* Footer */}
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-slate-500">
