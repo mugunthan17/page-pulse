@@ -1,4 +1,4 @@
-# PagePulse (<a href="https://pagepulse-beryl.vercel.app/">Try It Yourself</a>)
+# PagePulse (<a href="https://pagepulse-beryl.vercel.app/" target="_blank" rel="noopener noreferrer">Try It Yourself</a>)
 <img width="865" height="252" alt="image" src="https://github.com/user-attachments/assets/58e90a86-b7fe-45dc-9bd5-8b7a479cd38b" /><br>
 PagePulse is a full-stack web application for analyzing and scoring website performance, SEO, accessibility, and security.
 
