@@ -1,10 +1,10 @@
 import axios from "axios";
 
 //dev url
-const API_URL = "http://localhost:5000/api";
+//const API_URL = "http://localhost:5000/api";
 
 //production url
-//const API_URL = "https://page-pulse-ecru.vercel.app/api"
+const API_URL = "https://page-pulse-ecru.vercel.app/api"
 
 export const auditWebsite = async (url) => {
   try {
